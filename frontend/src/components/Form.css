@@ -25,3 +25,12 @@
     transform: scale(1.05); /* Slight zoom on hover */
   }
   
+  .delete-button {
+    color: black;
+    transition: color 0.3s ease;
+  }
+  
+  .delete-button:hover {
+    color: red;
+  }
+  
