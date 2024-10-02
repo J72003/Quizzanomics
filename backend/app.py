@@ -2,6 +2,7 @@ from PyPDF2 import PdfReader
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import random  # To generate random quiz questions
 
 app = Flask(__name__)
 CORS(app)
@@ -57,14 +58,39 @@ def upload_file():
             reader = PdfReader(filepath)
             for page in reader.pages:
                 extracted_text += page.extract_text()  # Extract text from each page
+            print(extracted_text)  # Log the extracted text to verify extraction
         except Exception as e:
             return jsonify({'message': 'Error processing PDF', 'error': str(e)}), 500
 
     # Remove the file after processing
     os.remove(filepath)
 
-    # Return the extracted text as a response (for now)
+    # Save the extracted text as a note
+    notes.append({'title': 'Extracted PDF Note', 'content': extracted_text})
+
+    # Return the extracted text as a response
     return jsonify({'extracted_text': extracted_text}), 200
+
+# Quiz generation based on stored notes
+@app.route('/api/generate-quiz', methods=['POST'])
+def generate_quiz():
+    data = request.get_json()
+    user_notes = data.get('notes', '')
+
+    # Simple algorithm to generate quiz questions
+    sentences = user_notes.split('. ')
+    questions = []
+
+    # Create quiz questions by picking random sentences and turning them into questions
+    for sentence in sentences:
+        if len(sentence) > 10:  # Exclude very short sentences
+            question = f"What is the significance of: '{sentence.strip()}?'"
+            questions.append(question)
+
+    if not questions:
+        return jsonify({'message': 'No questions generated'}), 400
+
+    return jsonify({'questions': questions}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

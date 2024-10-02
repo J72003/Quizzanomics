@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'; // Add 'Link' for navigation
 import Home from './pages/Home';
 import QuizPage from './pages/QuizPage';
 import StudyPage from './pages/StudyPage';
@@ -12,6 +12,13 @@ function App() {
       <div className="App">
         <header className="App-header">
           <h1>Welcome to Quizzanomics</h1>
+          {/* Navigation links */}
+          <nav>
+            <Link to="/">Home</Link> | 
+            <Link to="/quiz">Quiz</Link> | 
+            <Link to="/study">Study</Link> | 
+            <Link to="/upload">Upload Notes</Link> {/* Link to the Upload page */}
+          </nav>
         </header>
         <Routes>
           <Route path="/" element={<Home />} />
