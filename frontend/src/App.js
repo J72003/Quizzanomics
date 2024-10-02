@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import QuizPage from './pages/QuizPage';
 import StudyPage from './pages/StudyPage';
-import './App.css'; // Keep the CSS if you're using it for styling
+import UploadPage from './pages/UploadPage';  // Import the Upload page
+import './App.css';  // Keep the CSS for styling
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/study" element={<StudyPage />} />
+          <Route path="/upload" element={<UploadPage />} />  {/* Add the new Upload route */}
         </Routes>
       </div>
     </Router>
