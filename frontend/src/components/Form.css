@@ -1,0 +1,27 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  }
+
+  
+  h2 {
+    color: #4a90e2;
+  }
+  
+  form {
+    background-color: #fff;
+  }
+  
+  button {
+    background-color: #fff;
+    color: #000;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #000;
+    color: #fff;
+    transform: scale(1.05); /* Slight zoom on hover */
+  }
+  
