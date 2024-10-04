@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import QuizPage from './pages/QuizPage';
 import StudyPage from './pages/StudyPage';
 import UploadPage from './pages/UploadPage';  // Import the Upload page
+import FlashcardsPage from './components/FlashcardsPage';  // Import the Flashcards page
 import './App.css';  // Keep the CSS for styling
 
 function App() {
@@ -17,14 +18,16 @@ function App() {
             <Link to="/">Home</Link> | 
             <Link to="/quiz">Quiz</Link> | 
             <Link to="/study">Study</Link> | 
-            <Link to="/upload">Upload Notes</Link> {/* Link to the Upload page */}
+            <Link to="/upload">Upload Notes</Link> |  {/* Link to the Upload page */}
+            <Link to="/flashcards">Flashcards</Link>  {/* Link to the Flashcards page */}
           </nav>
         </header>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/study" element={<StudyPage />} />
-          <Route path="/upload" element={<UploadPage />} />  {/* Add the new Upload route */}
+          <Route path="/upload" element={<UploadPage />} />  {/* Add the Upload route */}
+          <Route path="/flashcards" element={<FlashcardsPage />} />  {/* Add the Flashcards route */}
         </Routes>
       </div>
     </Router>

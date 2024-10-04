@@ -1,0 +1,31 @@
+.flashcard {
+    border: 1px solid #ccc;
+    width: 250px;
+    height: 150px;
+    margin: 10px;
+    text-align: center;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .flashcard:hover {
+    transform: scale(1.05);
+  }
+  
+  .flashcard-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .flashcards-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  
