@@ -14,10 +14,10 @@ function QuizPage() {
     // Fetch notes and generate quiz
     axios.get('http://127.0.0.1:5000/api/notes')
       .then(response => {
-        const noteContent = response.data[0]?.content || ''; // Get the first note for now
+        const noteContent = response.data[0]?.content || ''; 
   
         // Call API to generate quiz (corrected URL)
-        axios.post('http://127.0.0.1:5000/api/generate-quiz-openai', { notes: noteContent })  // FIXED URL
+        axios.post('http://127.0.0.1:5000/api/generate-quiz-cohere', { notes: noteContent })  // FIXED URL
           .then(response => {
             setQuestions(response.data.questions);
             setLoadingQuiz(false);
@@ -64,7 +64,7 @@ function QuizPage() {
       <h2>Quiz Page</h2>
       <p>This is where you'll take quizzes generated from your notes.</p>
 
-      {/* Display the summary of the notes */}
+      {/* summary of the notes */}
       <h3>Summary of Your Notes</h3>
       {loadingSummary ? (
         <p>Loading summary...</p>

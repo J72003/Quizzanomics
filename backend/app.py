@@ -1,4 +1,4 @@
-import openai
+import cohere
 from PyPDF2 import PdfReader
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -11,8 +11,9 @@ from nltk.corpus import wordnet
 app = Flask(__name__)
 CORS(app)
 
-# Add your OpenAI API key here
-openai.api_key = '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'
+# Add your Cohere API key here
+COHERE_API_KEY = 'TbJME3S2nBkSS2lNsGvTZEfFt67MGkI7Jv0JzQwD'
+co = cohere.Client(COHERE_API_KEY)
 
 # Load spaCy model
 nlp = spacy.load("en_core_web_sm")
@@ -40,32 +41,32 @@ def extract_text_from_pdf(filepath):
         return str(e)
     return extracted_text
 
-# OpenAI function to generate questions from notes using completions API
-def generate_questions_with_openai(note_text):
+# Cohere function to generate quiz questions from notes
+def generate_questions_with_cohere(note_text):
     prompt = f"Create a list of quiz questions based on the following notes:\n\n{note_text}\n\n"
     try:
-        response = openai.completions.create(
-            model="gpt-3.5-turbo-instruct",  # Replace with appropriate model
+        response = co.generate(
+            model='command-xlarge-nightly',  # Cohere's model for text generation
             prompt=prompt,
             max_tokens=200,
             temperature=0.7,
         )
-        questions = response.choices[0].text.strip()
+        questions = response.generations[0].text.strip()
         return questions
     except Exception as e:
         return str(e)
 
-# OpenAI function to summarize notes using completions API
-def summarize_notes_with_openai(note_text):
+# Cohere function to summarize notes
+def summarize_notes_with_cohere(note_text):
     prompt = f"Summarize the following notes:\n\n{note_text}\n\n"
     try:
-        response = openai.completions.create(
-            model="gpt-3.5-turbo-instruct",  # Replace with appropriate model
+        response = co.generate(
+            model='command-xlarge-nightly',  # Cohere's summarization model
             prompt=prompt,
             max_tokens=150,
             temperature=0.5,
         )
-        summary = response.choices[0].text.strip()
+        summary = response.generations[0].text.strip()
         return summary
     except Exception as e:
         return str(e)
@@ -95,51 +96,51 @@ def upload_file():
 
     return jsonify({'extracted_text': extracted_text}), 200
 
-# Route to handle quiz generation with OpenAI
-@app.route('/api/generate-quiz-openai', methods=['POST'])
-def generate_quiz_openai():
+# Route to handle quiz generation with Cohere
+@app.route('/api/generate-quiz-cohere', methods=['POST'])
+def generate_quiz_cohere():
     data = request.get_json()
     user_notes = data.get('notes', '')
 
-    # Call OpenAI to generate questions based on the notes
-    questions = generate_questions_with_openai(user_notes)
+    # Call Cohere to generate questions based on the notes
+    questions = generate_questions_with_cohere(user_notes)
 
     return jsonify({'questions': questions})
 
-# Route to handle summarization with OpenAI
+# Route to handle summarization with Cohere
 @app.route('/api/summarize-notes', methods=['POST'])
 def summarize_notes():
     data = request.get_json()
     user_notes = data.get('notes', '')
 
-    # Call OpenAI to summarize the notes
-    summary = summarize_notes_with_openai(user_notes)
+    # Call Cohere to summarize the notes
+    summary = summarize_notes_with_cohere(user_notes)
 
     return jsonify({'summary': summary})
 
-# OpenAI function to generate flashcards from notes using completions API
-def generate_flashcards_with_openai(note_text):
+# Cohere function to generate flashcards from notes
+def generate_flashcards_with_cohere(note_text):
     prompt = f"Generate concise flashcards from the following notes:\n\n{note_text}\n\n"
     try:
-        response = openai.completions.create(
-            model="gpt-3.5-turbo-instruct",  # Replace with appropriate model
+        response = co.generate(
+            model='command-xlarge-nightly',  # Cohere's model for text generation
             prompt=prompt,
             max_tokens=300,
             temperature=0.5,
         )
-        flashcards = response.choices[0].text.strip()
+        flashcards = response.generations[0].text.strip()
         return flashcards
     except Exception as e:
         return str(e)
 
-# Route to handle flashcard generation with OpenAI
+# Route to handle flashcard generation with Cohere
 @app.route('/api/generate-flashcards', methods=['POST'])
 def generate_flashcards():
     data = request.get_json()
     user_notes = data.get('notes', '')
 
-    # Call OpenAI to generate flashcards based on the notes
-    flashcards = generate_flashcards_with_openai(user_notes)
+    # Call Cohere to generate flashcards based on the notes
+    flashcards = generate_flashcards_with_cohere(user_notes)
 
     return jsonify({'flashcards': flashcards})
 
