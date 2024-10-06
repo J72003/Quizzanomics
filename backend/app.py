@@ -51,7 +51,9 @@ def generate_questions_with_cohere(note_text):
             max_tokens=200,
             temperature=0.7,
         )
-        questions = response.generations[0].text.strip()
+        questions_text = response.generations[0].text.strip()
+        # Split the text into an array of questions
+        questions = questions_text.split('\n')
         return questions
     except Exception as e:
         return str(e)
@@ -68,6 +70,21 @@ def summarize_notes_with_cohere(note_text):
         )
         summary = response.generations[0].text.strip()
         return summary
+    except Exception as e:
+        return str(e)
+
+# Cohere function to generate flashcards from notes
+def generate_flashcards_with_cohere(note_text):
+    prompt = f"Generate concise flashcards from the following notes:\n\n{note_text}\n\n"
+    try:
+        response = co.generate(
+            model='command-xlarge-nightly',  # Cohere's model for text generation
+            prompt=prompt,
+            max_tokens=300,
+            temperature=0.5,
+        )
+        flashcards = response.generations[0].text.strip()
+        return flashcards
     except Exception as e:
         return str(e)
 
@@ -96,13 +113,12 @@ def upload_file():
 
     return jsonify({'extracted_text': extracted_text}), 200
 
-# Route to handle quiz generation with Cohere
-@app.route('/api/generate-quiz-cohere', methods=['POST'])
-def generate_quiz_cohere():
+@app.route('/api/generate-quiz', methods=['POST'])
+def generate_quiz():
     data = request.get_json()
     user_notes = data.get('notes', '')
 
-    # Call Cohere to generate questions based on the notes
+    # Generate quiz using Cohere API
     questions = generate_questions_with_cohere(user_notes)
 
     return jsonify({'questions': questions})
@@ -117,21 +133,6 @@ def summarize_notes():
     summary = summarize_notes_with_cohere(user_notes)
 
     return jsonify({'summary': summary})
-
-# Cohere function to generate flashcards from notes
-def generate_flashcards_with_cohere(note_text):
-    prompt = f"Generate concise flashcards from the following notes:\n\n{note_text}\n\n"
-    try:
-        response = co.generate(
-            model='command-xlarge-nightly',  # Cohere's model for text generation
-            prompt=prompt,
-            max_tokens=300,
-            temperature=0.5,
-        )
-        flashcards = response.generations[0].text.strip()
-        return flashcards
-    except Exception as e:
-        return str(e)
 
 # Route to handle flashcard generation with Cohere
 @app.route('/api/generate-flashcards', methods=['POST'])

@@ -1,80 +1,44 @@
-// src/pages/UploadPage.js
-
 import React, { useState } from 'react';
-import Upload from '../components/Upload'; // Import the Upload component
-import axios from 'axios';  // To make API requests
+import axios from 'axios';
+import './UploadPage.css'; // Assuming you create this CSS file to match the theme
 
 function UploadPage() {
-  const [inputNotes, setInputNotes] = useState('');  // Store manually typed notes
-  const [storedNotes, setStoredNotes] = useState('');  // Store notes from the backend
-  const [quizQuestions, setQuizQuestions] = useState([]);  // Store generated quiz questions
+  const [file, setFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [error, setError] = useState('');
 
-  // Function to handle manual note input
-  const handleInputNotesChange = (e) => {
-    setInputNotes(e.target.value);
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
   };
 
-  // Function to save inputted notes to the backend
-  const handleSaveNotes = () => {
-    axios.post('http://127.0.0.1:5000/api/notes', { title: 'Manual Input', content: inputNotes })
-      .then(response => {
-        setStoredNotes(inputNotes);  // Save the input notes in the state
-        setInputNotes('');  // Clear the input field
-      })
-      .catch(error => {
-        console.error('Error saving notes:', error);
-      });
-  };
+  const handleFileUpload = () => {
+    const formData = new FormData();
+    formData.append('file', file);
 
-  // Function to generate quiz questions from stored notes
-  const handleGenerateQuiz = () => {
-    axios.post('http://127.0.0.1:5000/api/generate-quiz', { notes: storedNotes })
+    axios.post('http://127.0.0.1:5000/api/upload', formData)
       .then(response => {
-        setQuizQuestions(response.data.questions);  // Set the generated quiz questions
+        setUploadStatus('File uploaded successfully!');
+        setError('');
       })
       .catch(error => {
-        console.error('Error generating quiz:', error);
+        console.error('Error uploading file:', error);
+        setError('Failed to upload the file.');
+        setUploadStatus('');
       });
   };
 
   return (
-    <div className="upload-page">
-      <h2>Upload or Input Your Class Notes</h2>
-      <Upload />  {/* File upload component */}
+    <div className="upload-container">
+      <h2 className="upload-header">Upload Your Notes</h2>
+      <p>Upload your study materials to generate quizzes and flashcards.</p>
 
-      <h3>Manually Input Notes</h3>
-      <textarea
-        value={inputNotes}
-        onChange={handleInputNotesChange}
-        rows="5"
-        placeholder="Type your notes here..."
-      />
-      <button onClick={handleSaveNotes}>Save Notes</button>
+      <div className="file-upload-area">
+        <input type="file" onChange={handleFileChange} className="file-input" />
+        <button className="upload-button" onClick={handleFileUpload}>Upload</button>
+      </div>
 
-      {storedNotes && (
-        <div>
-          <h3>Your Stored Notes:</h3>
-          <p>{storedNotes}</p>
-        </div>
-      )}
-
-      {storedNotes && (
-        <div>
-          <h3>Generate Quiz from Notes</h3>
-          <button onClick={handleGenerateQuiz}>Generate Quiz</button>
-        </div>
-      )}
-
-      {quizQuestions.length > 0 && (
-        <div>
-          <h3>Generated Quiz Questions</h3>
-          <ul>
-            {quizQuestions.map((question, index) => (
-              <li key={index}>{question}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {uploadStatus && <p className="upload-status">{uploadStatus}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
